@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculator</title>
+</head>
+<body>
+  <div id="root"></div>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <script src="https://fb.me/react-0.14.6.js"></script>
+  <script src="https://fb.me/react-dom-0.14.6.js"></script>
+  <script src="http://fb.me/JSXTransformer-0.12.1.js"></script>
+  <script type="text/jsx">
+  function Operand(props) {
+    return (
+      <button className="operands" onClick={props.onClick}>
+        {props.value}
+      </button>
+    );
+  }
+
+  function Operator(props) {
+    return (
+      <button className="operator" onClick={props.onClick}>
+        {props.value}
+      </button>
+    );
+  }
+
+  const operations = {
+    '+': (firstVal, secondVal) => firstVal + secondVal,
+    '-': (firstVal, secondVal) => firstVal - secondVal,
+    '*': (firstVal, secondVal) => firstVal * secondVal,
+    '/': (firstVal, secondVal) => firstVal / secondVal,
+  }
+
+  class Display extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        storedVal: 0,
+        displayVal: 0,
+        operVal: '+',
+        isFirstNum: true,
+        isEquals: false
+      }
+    }
+
+    handleOperand(i) {
+      if (!this.state.isFirstNum) {
+        this.setState({
+          storedVal: this.state.displayVal,
+          displayVal: i,
+          isFirstNum: true,
+          isEquals: false,
+        });
+      } else {
+        this.setState({
+          displayVal: this.state.displayVal * 10 + i,
+        });
+      }
+    }
+
+    handleEqualSign() {
+      if (this.state.isEquals) {
+        this.setState({
+          displayVal: operations[this.state.operVal](this.state.displayVal, this.state.storedVal)
+        });
+      } else {
+        this.setState({
+          displayVal: operations[this.state.operVal](this.state.storedVal, this.state.displayVal)
+        });
+
+        this.setState({
+          storedVal: this.state.displayVal,
+          isFirstNum: false,
+          isEquals: true
+        });
+      }
+    }
+
+    handleOperator(i) {
+      if (i === 'C') {
+        this.setState({
+          storedVal: 0,
+          displayVal: 0,
+          operVal: '+',
+          isFirstNum: true,
+          isEquals: false
+        });
+      } else if (i === '=') {
+        this.handleEqualSign();
+      } else {
+        this.setState({
+          operVal: i,
+          storedVal: this.state.displayVal,
+          isFirstNum: false
+        });
+      }
+    }
+
+    renderOperand(i) {
+      return (
+        <Operand
+          value = {i}
+          onClick = {() => this.handleOperand(i)}
+        />
+      );
+    }
+
+    renderOperator(i) {
+      return (
+        <Operator
+          value = {i}
+          onClick = {() => this.handleOperator(i)}
+        />
+      );
+    }
+
+    render () {
+      return (
+        <div>
+          <div className="display-row">{this.state.displayVal}</div>
+          <div className="calc-row">
+            {this.renderOperand(7)}
+            {this.renderOperand(8)}
+            {this.renderOperand(9)}
+            {this.renderOperator('C')}
+          </div>
+          <div className="calc-row">
+            {this.renderOperand(4)}
+            {this.renderOperand(5)}
+            {this.renderOperand(6)}
+            {this.renderOperator('/')}
+          </div>
+          <div className="calc-row">
+            {this.renderOperand(1)}
+            {this.renderOperand(2)}
+            {this.renderOperand(3)}
+            {this.renderOperator('*')}
+          </div>
+          <div className="calc-row">
+            {this.renderOperand(0)}
+            {this.renderOperator('+')}
+            {this.renderOperator('-')}
+            {this.renderOperator('=')}
+          </div>
+        </div>
+      );
+    }
+  }
+
+  class Calculator extends React.Component {
+    render() {
+      return (
+        <div className="calc">
+          <h1>Calculator</h1>
+          <div className="display">
+            <Display />
+          </div>
+        </div>
+      );
+    }
+  }
+
+  ReactDOM.render(
+    <Calculator />,
+    document.getElementById('root')
+  );
+  </script>
+</body>
+</html>
