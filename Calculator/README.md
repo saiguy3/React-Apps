@@ -13,5 +13,6 @@ Download the folder open index.html in Google Chrome (should work on most other 
 
 ## Future Improvements
 
-* Given more time, I would add more functions and a decimal button
+Given more time,
+* I would add more functions and a decimal button
 * Improve the UI and make it more responsive to the web page
